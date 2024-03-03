@@ -73,6 +73,10 @@ class DataAnalysis:
         total_rounds = sum([len(session.retention_times) for session in self.sessions])
         return round(total_time / total_rounds) if total_rounds else 0
 
+    def overall_max_retention_time(self):
+        max_time = max([max(session.retention_times) for session in self.sessions])
+        return max_time
+
 
 class DataVisualization:
     def __init__(self, sessions, background_color='grey'):
@@ -109,7 +113,7 @@ class DataVisualization:
         self.ax.set_facecolor(self.background_color)
         self.ax.xaxis.set_major_locator(mdates.AutoDateLocator())
         self.ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-        plt.xticks(rotation=45, ha='right')  # Rotate for better legibility
+        plt.xticks(rotation=45, ha='right')
         self.ax.set_xlabel('Date')
         self.ax.set_ylabel('Retention Time (seconds)')
         self.ax.set_title('Breathwork Session Analysis')
@@ -144,11 +148,12 @@ class DataVisualization:
 
         self.ax.plot(x_dates_formatted, y_pred, label=label, color=color, linewidth=2, alpha=0.75)
 
-    def finalize_plot(self, overall_average):
+    def finalize_plot(self, overall_average, overall_max):
         self.fig.autofmt_xdate()
         self.ax.legend(loc='upper left', bbox_to_anchor=(1, 1), facecolor=self.background_color, framealpha=1)
         self.fig.subplots_adjust(right=0.8)
-        self.ax.text(1.01, 0.7, f'Average Retention: {overall_average}s',transform=self.ax.transAxes, verticalalignment='top')
+        self.ax.text(1.01, 0.7, f'Average Retention: {overall_average}',transform=self.ax.transAxes, verticalalignment='top')
+        self.ax.text(1.01, 0.65, f'Max Retention: {overall_max}',transform=self.ax.transAxes, verticalalignment='top')
         self.fig.show()
 
     def save_plot(self, filename, bbox_inches='tight'):
@@ -162,7 +167,9 @@ def main():
     # Analyze data
     data_analysis = DataAnalysis(sessions)
     overall_average = data_analysis.overall_average_retention_time()
-    print(f"Overall Average Retention Time: {overall_average} seconds")
+    overall_average = seconds_to_retention_time(overall_average)
+    overall_max = data_analysis.overall_max_retention_time()
+    overall_max = seconds_to_retention_time(overall_max)
 
     # Visualize data
     data_visualization = DataVisualization(sessions)
@@ -172,7 +179,7 @@ def main():
     data_visualization.plot_session_averages()
     data_visualization.add_data_regression()
     data_visualization.add_best_times_regression()
-    data_visualization.finalize_plot(overall_average)
+    data_visualization.finalize_plot(overall_average, overall_max)
 
 if __name__ == "__main__":
     main()
