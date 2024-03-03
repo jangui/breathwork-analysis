@@ -120,16 +120,16 @@ class DataVisualization:
 
     def plot_all_sessions(self):
         dates_formatted = mdates.date2num(self.dates_all)
-        self.ax.scatter(dates_formatted, self.all_retention_times, label='All Retention Times', alpha=0.5)
+        self.ax.scatter(dates_formatted, self.all_retention_times, label='Retention Time', alpha=0.5)
 
     def plot_best_times(self):
         unique_dates_formatted = mdates.date2num(self.session_dates)
-        self.ax.scatter(unique_dates_formatted, self.best_retention_times, color='yellow', label='Best Retention Times',
+        self.ax.scatter(unique_dates_formatted, self.best_retention_times, color='yellow', label='Session Best Time',
                         edgecolor='black')
 
     def plot_session_averages(self):
         unique_dates_formatted = mdates.date2num(self.session_dates)
-        self.ax.scatter(unique_dates_formatted, self.average_retention_times, color='purple', label='Session Averages',
+        self.ax.scatter(unique_dates_formatted, self.average_retention_times, color='purple', label='Session Average',
                         edgecolor='black', zorder=5)
 
     def add_data_regression(self):
